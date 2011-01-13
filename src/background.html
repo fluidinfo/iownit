@@ -1,0 +1,188 @@
+<html>
+
+<!--
+    http://unlicense.org/
+    author: gregory tomlinson
+-->
+
+    <head>
+        <title>the background page</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta name="keywords" content="awesome" />
+        <meta name="description" content="" />
+        <!--  
+            the background page is the 'central brain' of a script. It is always running and available.
+            
+                other pages such as options, popup and some developer 
+                created html will only run for the life of the window
+        -->
+    </head>
+    <body>
+        <div id="container">
+            
+        </div> <!-- end #container -->
+    
+        <script type="text/javascript" charset="utf-8" src="js/jquery-1.4.4.js"></script>
+        <script type="text/javascript" charset="utf-8" src="js/fastFrag.js"></script>        
+        <script type="text/javascript" charset="utf-8">
+        // global variables / functions 
+        // (available to other pages via chrome.extension.getBackgroundPage() (or the correct syntax))
+
+        // $ is a 'shortcut' to jQuery. If you read the jQuery source, you will see $ is preserved, jQuery is always 
+        // available, jQuery is generally mapped to $ if $ is undefined. This is configurable.
+        var curr_username, base_url="http://fluiddb.fluidinfo.com";
+        function build_auth_string() {
+            var user_data = findit("user_data");
+            if(!user_data || !user_data.username || !user_data.pass) {
+                throw("login required")
+            }
+            return "Basic " + window.btoa(user_data.username+":"+user_data.pass);
+        }
+        // some wrappers, canvenience functions to localStorage (JS local key-value store )
+        function findit( key ) {
+            try {
+                var data_string = window.localStorage.getItem( key );
+                return JSON.parse( data_string );
+            } catch(e) {
+                console.log("oops, no storage");
+                return null
+            }
+
+        }
+        function deletit( key ) {
+            try {
+                return window.localStorage.removeItem( key )
+            } catch(e){}
+            return false;            
+        }
+        function storeit( key, value ) {
+            try {
+                window.localStorage.setItem( key, JSON.stringify( value ) );
+            } catch(e) {}
+        }
+        
+        function save_user( user, pass ) {
+            curr_username=user;
+            storeit( "user_data", { 'username' : user, 'pass' : pass } );
+        }
+        function delete_user() {
+            deletit("user_data");
+        }
+        
+        // puts, let's try with jquery
+        function call_put_service( url, params, callback  ) {
+            var auth=build_auth_string();
+            $.ajax({
+                'url' : url,
+                'data' : params,
+                'processData' : false,
+                'contentType' : "application/vnd.fluiddb.value+json",
+                'dataType' : 'json',
+                'type' : 'PUT',
+                beforeSend : function(req) {
+                    req.setRequestHeader('Authorization', auth);
+                },                    
+                'success' : callback
+            });                
+        }
+        function call_post_service( url, json_data, callback ) {
+            var auth=build_auth_string();
+            $.ajax({
+                'url' : url,
+                'data' : JSON.stringify( json_data ), // turn it into a string from native JSON to give to fluiddb
+                'processData' : false,
+                'contentType' : "application/json",
+                'dataType' : 'json',
+                'type' : 'POST',
+                beforeSend : function(req) {
+                    req.setRequestHeader('Authorization', auth);
+                },
+                'error' : callback,
+                'success' : callback
+            });                
+        }
+        // opens a new 'page'
+        function get_chrome_page( page_name ) {
+            var url =  chrome.extension.getURL(page_name),
+                curr_tab, i=0,
+                createTab=true, params = { 'selected' : true, 'url' : url };
+            chrome.tabs.getAllInWindow(null, function(tab_array) {
+
+               for(; curr_tab=tab_array[i]; i++) {
+
+                   if( curr_tab.url === url ) {
+                       createTab=false;
+                       chrome.tabs.update( curr_tab.id, params);
+                       break;
+                   }
+               }
+                if(createTab) { chrome.tabs.create( { 'url' : chrome.extension.getURL(page_name) }) }
+            });
+        }            
+        
+        
+        // specifics
+        function create_iownit_tag( callback ) {
+            var user_data=findit("user_data");
+            var url=base_url+"/tags/" + user_data.username,
+                tag_data={
+                    "description": "Things I own",
+                    "indexed": true,
+                    "name": "iownit"
+                }
+            call_post_service(url,tag_data,callback);
+        }
+        
+        function store_iownit_tag( data, callback ) {
+            var book_url=encodeURIComponent( data.book_title + " ("+ data.author +")" );
+            var url = base_url+"/about/"+book_url+"/"+curr_username+"/iownit"
+            call_put_service(url, data.ownit, callback)
+        }
+        // listen up
+
+        
+        (function() {
+            // hide the init func... just to show you can 'wrap' things
+            // also, nothing should really recall these
+            function init() {
+                chrome.extension.onRequest.addListener(_pages_request_listener);
+                var user_data = findit("user_data");
+                if(!user_data || !user_data.username || !user_data.pass) {
+                    // make the user login
+                    get_chrome_page("options.html");
+                }
+                $.ajaxSetup({
+                    'dataType' : 'json',
+                    error : function(jo) {
+                        console.log("ajax error", jo)
+                    }                    
+                })
+            }
+            
+            function _pages_request_listener( request, sender, sendResponse) {
+                if(!request || !request.action) {
+                    return
+                }
+                // todo
+                // check to see if user logged in, if not, send a generic message and prompt user todo so...
+
+                var act=request.action;
+                switch(act) {
+
+                    case "add_iown":
+                        console.log("found it!", request.data);
+                        store_iownit_tag( request.data, sendResponse );
+                    break;
+
+                }
+            }            
+            
+            init();            
+        })();
+
+
+
+        </script>
+      
+    </body>
+</html>

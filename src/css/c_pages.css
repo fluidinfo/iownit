@@ -1,0 +1,45 @@
+/*
+   c_pages.css
+   crazy-fe
+   
+   Created by gregory tomlinson on 2011-01-11.
+   Copyright 2011 the public domain. All rights reserved.
+*/
+#fluidinfo_iown_form {
+}
+.fluidinfo_inline_box {
+    clear:left;
+    display:block;
+    padding:5px 0;    
+}
+#fluidinfo_iown_form div {
+    font-size:13px;
+    
+}
+#fluidinfo_toast_outer {
+    position:fixed;
+    width:100%;
+    height:100%;
+    bottom:0;
+    right:0;
+}
+#fluidinfo_toast_inner {
+    position:relative;
+    margin:90px auto 0;
+    background:rgba(255,255,255,0.95);
+    width:420px;
+    padding:40px;
+    min-height:150px;
+    border:1px solid #ccc;
+    border-radius:6px;
+}
+
+#fluidinfo_toast_inner h1 {
+    font-size:15px;
+    font-weight:normal;
+    margin:0 0 5px 0;
+    padding:0;
+}
+#fluidinfo_toast_inner label {
+    display:block;
+}

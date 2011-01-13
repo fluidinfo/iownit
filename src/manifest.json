@@ -1,0 +1,30 @@
+{
+  "name": "fluidinfo | I own it",
+  "version": "0.1.0.7",
+  "options_page": "options.html",
+  "description": "Annotate books you own from o'reily",
+  "background_page": "background.html",
+//  "browser_action": {
+    //"default_title": "bit.ly",  
+    //"default_icon": "bitly.png"
+//  },
+  "icons" : { 
+    "16" : "graphics/logo_16.png",
+    "48" : "graphics/logo_48.png",
+    "128" : "graphics/logo_128.png"    
+  },
+  "permissions": [
+    "http://oreilly.com/*", 
+    "http://fluiddb.fluidinfo.com/*",
+    "unlimited_storage",
+    "tabs",
+    "contextMenus"
+  ],
+  "content_scripts": [
+    {
+     "matches": ["http://oreilly.com/catalog/*"],
+     "js": ["js/jquery-1.4.4.js","js/fastFrag.js","js/c_scripts/dispatcher.js"],
+     "css" : ["css/c_pages.css"]
+    }
+  ]
+}

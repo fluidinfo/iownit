@@ -1,0 +1,31 @@
+Chrome Ext Plan
+
+Fluid DB, I own this book
+
+/about/book (author)/username/tag
+or expanded
+username/tag == username/namespace/namspace/tag
+
+
+uses basic auth, no app keys
+
+--- add right click context menu, tag, save 'whatever'
+
+detect if it's an element (img) or it's selected Document text
+
+    -- grab the URL of that page (where fond) and the object itself
+
+
+
+
+
+make a POST:
+    /tags/username
+    JSON .. name of new tag, desc, indexed or not.
+
+....     
+{
+  "description": "How I rate things on a scale of 1 (worst) to 10 (best).",
+  "indexed": false,
+  "name": "rating"
+}    

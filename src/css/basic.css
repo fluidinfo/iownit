@@ -1,0 +1,90 @@
+/*
+    filename: basic.css
+    
+    http://unlicense.org/
+    author: gregory tomlinson
+*/
+
+*{ padding:0; margin:0; }
+h1,h2,h3,h4,h5,h6,input,textarea,select,option, body {
+    font-family:Arial, sans-serif;
+    font-size:13px;
+    font-weight:normal;
+    color:#333;
+}
+.hr {
+    clear:both;
+    float:none;
+}
+.hr hr {
+    display:none;
+}
+a {
+    color:#69f;
+    text-decoration:none;
+}
+a:hover {
+    color:#69f;
+    text-decoration:underline;    
+}
+#top {
+    
+}
+#middle {
+    
+}
+#bottom {
+    
+}
+
+
+/* options page  */
+#left_col {
+    width:210px;
+    float:left;
+    margin-right:20px;
+}
+#center_col {
+    float:left;
+    margin-top:20px;
+    width:600px;
+}
+.form_box {
+    display:block;
+    clear:both;
+    float:none;
+    font-size:18px;
+    margin-bottom:15px;
+}
+.form_box label {
+    display:block;
+}
+.form_box .text_input {
+    display:block;
+    border:1px solid #ccc;
+    padding:4px 2px;
+    width:200px;
+    border-radius:6px;
+}
+.submit_box {
+    background:rgba(102,51,0,0.8);
+    border:1px solid #ccc;
+    border-radius:6px;
+    padding:8px 20px;
+    cursor:pointer;
+    color:white;
+    font-size:15px;
+}
+.submit_box:hover {
+    background:rgba(102,51,0,0.7);    
+}
+.signin_form_outer_box {
+    
+}
+.signin_form_outer_box h1 {
+    font-size:22px;
+    margin-bottom:15px;
+}
+.sign_in_outer_box {
+    
+}
